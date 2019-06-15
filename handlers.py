@@ -89,7 +89,7 @@ def callback_handler(bot, update):
 bot_handlers = [CommandHandler('start', start),
                 RegexHandler('Главное меню', main_menu),
                 RegexHandler('Начать тест', test_start),
-                CallbackQueryHandler('', callback_handler)
+                CallbackQueryHandler('*', callback_handler)
 
 
                 ]
