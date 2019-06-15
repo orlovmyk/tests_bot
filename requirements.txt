@@ -1,0 +1,3 @@
+gunicorn
+python-telegram-bot
+pyowm
