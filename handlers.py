@@ -29,10 +29,10 @@ def start(bot, update):
 
 
 def test_start(bot, update):
-    message = "Первый вопрос" \
-              "1. выфвы" \
-              "2. выфвы" \
-              "3. выфвыфвыф"
+    message = "Первый вопрос\n" \
+              "1. выфвы\n" \
+              "2. выфвы\n" \
+              "3. выфвыфвыф\n"
     markup = InlineKeyboardMarkup([[InlineKeyboardButton(text="1", callback_data="1.1")],
                                    [InlineKeyboardButton(text="2", callback_data="1.2")],
                                    [InlineKeyboardButton(text="3", callback_data="1.3")],
@@ -46,10 +46,15 @@ def main_menu(bot, update):
                               reply_markup=MAIN_MENU_MARKUP)
 
 
+# CALLBACK HANDLER
+def callback_handler(bot, update):
+    print(123)
+
+
 bot_handlers = [CommandHandler('start', start),
                 RegexHandler('Главное меню', main_menu),
                 RegexHandler('Начать тест', test_start),
-
+                CallbackQueryHandler('', callback_handler)
 
 
                 ]
