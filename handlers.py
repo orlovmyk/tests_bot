@@ -20,8 +20,13 @@ MAIN_MENU_MARKUP = ReplyKeyboardMarkup([['Начать тест', 'Начать 
                                         ['Начать тест']],
                                        resize_keyboard=True)
 
+INITIAL_MESSAGE = "Привет!\n" \
+                  "'Я чат-бот, созданый для ...\n\n"
 
-TEXT = ["Вопрос №1 Вариатны такие:\n"
+TEXT = ["Тест на дебила\n"
+        "Желаю удачи",
+
+        "Вопрос №1 Вариатны такие:\n"
         "1. выфвыф\n"
         "2. выфвы\n" 
         "3. выф выфвыф\n",
@@ -35,21 +40,30 @@ TEXT = ["Вопрос №1 Вариатны такие:\n"
         "1. выфвыф\n"
         "2. выфвы\n"
         "3. выф выфвыф\n",
+
+        "Конец\n"
+        "Дальше ничего нет\n",
         ]
 
 
 # USEFUL FUNCTIONS
-def generate_inline(step):
-    inline = [[InlineKeyboardButton(text="1", callback_data=str(step)+".1")],
-              [InlineKeyboardButton(text="2", callback_data=str(step)+".2")],
-              [InlineKeyboardButton(text="3", callback_data=str(step)+".3")]]
+def generate_inline(*step):
+    # ARGUMENT FOR STEP KEYBOARD
+    # NO ARGUMENT FOR EMPTY KEYBOARD
+    if step:
+        inline = InlineKeyboardMarkup(
+                 [[InlineKeyboardButton(text="1", callback_data=str(step)+".1")],
+                  [InlineKeyboardButton(text="2", callback_data=str(step)+".2")],
+                  [InlineKeyboardButton(text="3", callback_data=str(step)+".3")]])
+
+    else:
+        inline = InlineKeyboardMarkup([[]])
     return inline
 
 
 # MESSAGE HANDLER
 def start(bot, update):
-    update.message.reply_text('Привет!\n'
-                              'Я чат-бот, созданый для ...\n\n',
+    update.message.reply_text(INITIAL_MESSAGE,
                               reply_markup=MAIN_MENU_MARKUP)
 
 
@@ -69,27 +83,27 @@ def main_menu(bot, update):
 # CALLBACK HANDLER
 def callback_handler(bot, update):
     query = update.callback_query
-    print(query)
 
-    step, result = query.strip(".")
-    step += 1
+    step, result = query.data.split(".")
+    step = int(step) + 1
 
     if step > len(TEXT):
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              text="Конец",
-                              reply_markup=[[]])
+                              text=TEXT[step],
+                              reply_markup=generate_inline())
+        bot.answer_callback_query(callback_query_id=query.id, text="На этом всё")
 
-    bot.edit_message_text(chat_id=query.message.chat_id,
-                          message_id=query.message.message_id,
-                          text=TEXT[step],
-                          reply_markup=generate_inline(step))
+    else:
+        bot.edit_message_text(chat_id=query.message.chat_id,
+                              message_id=query.message.message_id,
+                              text=TEXT[step],
+                              reply_markup=generate_inline(step))
+        bot.answer_callback_query(callback_query_id=query.id, text="Ви вибрали вариант №" + str(result))
 
 
 bot_handlers = [CommandHandler('start', start),
                 RegexHandler('Главное меню', main_menu),
                 RegexHandler('Начать тест', test_start),
-                CallbackQueryHandler('*', callback_handler)
-
-
+                CallbackQueryHandler(callback_handler)
                 ]
