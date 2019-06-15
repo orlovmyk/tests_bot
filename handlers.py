@@ -54,7 +54,7 @@ def start(bot, update):
 
 
 def test_start(bot, update):
-    message = TEXT[1]
+    message = TEXT[0]
     markup = InlineKeyboardMarkup(generate_inline(0))
 
     update.message.reply_text(message,
