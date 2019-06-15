@@ -52,9 +52,9 @@ def generate_inline(*step):
     # NO ARGUMENT FOR EMPTY KEYBOARD
     if step:
         inline = InlineKeyboardMarkup(
-                 [[InlineKeyboardButton(text="1", callback_data=str(step)+".1")],
-                  [InlineKeyboardButton(text="2", callback_data=str(step)+".2")],
-                  [InlineKeyboardButton(text="3", callback_data=str(step)+".3")]])
+                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".1")],
+                  [InlineKeyboardButton(text="2", callback_data=str(step[0])+".2")],
+                  [InlineKeyboardButton(text="3", callback_data=str(step[0])+".3")]])
 
     else:
         inline = InlineKeyboardMarkup([[]])
@@ -69,7 +69,7 @@ def start(bot, update):
 
 def test_start(bot, update):
     message = TEXT[0]
-    markup = InlineKeyboardMarkup(generate_inline(0))
+    markup = generate_inline(0)
 
     update.message.reply_text(message,
                               reply_markup=markup)
@@ -98,8 +98,8 @@ def callback_handler(bot, update):
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
                               text=TEXT[step],
-                              reply_markup=generate_inline(step))
-        bot.answer_callback_query(callback_query_id=query.id, text="Ви вибрали вариант №" + str(result))
+                              reply_markup=generate_inline())
+        bot.answer_callback_query(callback_query_id=query.id, text="Ви выбрали вариант №" + str(result))
 
 
 bot_handlers = [CommandHandler('start', start),
