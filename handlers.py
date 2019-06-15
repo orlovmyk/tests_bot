@@ -62,11 +62,11 @@ def generate_inline(*step):
 
 
 def add_kw(result, chat_id, message_id, **kwargs):
-    if kwargs:
+    if not kwargs:
         new_kw = {
             chat_id: {
                 message_id: {
-                    "result": result
+                    "result": int(result)
                 }
             }
         }
@@ -74,7 +74,7 @@ def add_kw(result, chat_id, message_id, **kwargs):
     else:
         new_chat_kw = {
             message_id: {
-                "result": result
+                "result": int(result)
             }
         }
         COUNTER[chat_id].update(new_chat_kw)
@@ -82,8 +82,9 @@ def add_kw(result, chat_id, message_id, **kwargs):
 
 def count_result(message, result):
     # 'message': {'message_id': 436, 'date': 1560638474, 'chat': {'id': 239062390,
+    print(message.chat.id)
     chat_id = message.chat.id
-    message_id = message.id
+    message_id = message.message_id
 
     if chat_id not in COUNTER.keys():
         add_kw(result, chat_id, message_id)
@@ -91,12 +92,13 @@ def count_result(message, result):
         if message_id not in COUNTER[chat_id]:
             add_kw(result, chat_id, message_id, to_message=True)
         else:
-            COUNTER[chat_id][message_id].result += result
+            print(COUNTER[chat_id][message_id]["result"])
+            COUNTER[chat_id][message_id]["result"] += int(result)
 
 
 def delete_query(message):
     chat_id = message.chat.id
-    message_id = message.id
+    message_id = message.message_id
     if chat_id in COUNTER.keys():
         if message_id in COUNTER[chat_id]:
             COUNTER[chat_id].pop(message_id)
@@ -108,10 +110,10 @@ def delete_query(message):
 def get_result(message):
     # 'message': {'message_id': 436, 'date': 1560638474, 'chat': {'id': 239062390,
     chat_id = message.chat.id
-    message_id = message.id
+    message_id = message.message_id
 
     if chat_id in COUNTER.keys():
-        if message_id in COUNTER[chat_id]:
+        if message_id in COUNTER[chat_id].keys():
             return COUNTER[chat_id][message_id]["result"]
 
 
@@ -141,13 +143,16 @@ def callback_handler(bot, update):
     step, result = query.data.split(".")
     step = int(step) + 1
 
-    if step > len(TEXT):
+    if step >= len(TEXT) - 1:
+        print(999)
+        print(get_result(query.message))
+
         count_result(query.message, result)
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              text=TEXT[step],
+                              text=TEXT[step] + "\nВаш результат: " + str(get_result(query.message)),
                               reply_markup=generate_inline())
-        bot.answer_callback_query(callback_query_id=query.id, text="На этом всё\nВаш результат: " + str(get_result(query.message)))
+        bot.answer_callback_query(callback_query_id=query.id, text="На этом всё")
         delete_query(query.message)
 
     else:
