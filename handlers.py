@@ -15,9 +15,29 @@ from telegram import (ReplyKeyboardMarkup,
 
 COUNTER = {}
 
-MAIN_MENU_MARKUP = ReplyKeyboardMarkup([['Начать тест', 'Начать тест'],
-                                        ['Начать тест']],
+MAIN_MENU_MARKUP = ReplyKeyboardMarkup([['О кафедре'],
+                                        ['О специальностях/специализациях'],
+                                        ['Начать тест'],
+                                        ['Контакты'],
+                                        ['Адрес']],
                                        resize_keyboard=True)
+
+SUB_KEYBOARD = ReplyKeyboardMarkup([['Бакалавриат'],
+                                    ['Магистратура'],
+                                    ['На главную']],
+                                   resize_keyboard=True)
+
+SUB_KEYBOARD_B = ReplyKeyboardMarkup([['1'],
+                                      ['2'],
+                                      ['3'],
+                                      ['Вернуться назад']],
+                                   resize_keyboard=True)
+
+SUB_KEYBOARD_M = ReplyKeyboardMarkup([['1'],
+                                      ['2'],
+                                      ['3'],
+                                      ['Вернуться назад']],
+                                   resize_keyboard=True)
 
 INITIAL_MESSAGE = "Привет!\n" \
                   "'Я чат-бот, созданый для ...\n\n"
@@ -51,9 +71,9 @@ def generate_inline(*step):
     # NO ARGUMENT FOR EMPTY KEYBOARD
     if step:
         inline = InlineKeyboardMarkup(
-                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".1")],
-                  [InlineKeyboardButton(text="2", callback_data=str(step[0])+".2")],
-                  [InlineKeyboardButton(text="3", callback_data=str(step[0])+".3")]])
+                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".1"),
+                  InlineKeyboardButton(text="2", callback_data=str(step[0])+".2"),
+                  InlineKeyboardButton(text="3", callback_data=str(step[0])+".3")]])
 
     else:
         inline = InlineKeyboardMarkup([[]])
