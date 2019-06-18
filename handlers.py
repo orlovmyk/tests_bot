@@ -13,7 +13,6 @@ from telegram import (ReplyKeyboardMarkup,
                       InlineKeyboardButton,
                       InlineKeyboardMarkup)
 
-#fdfdf
 COUNTER = {}
 
 MAIN_MENU_MARKUP = ReplyKeyboardMarkup([['Начать тест', 'Начать тест'],
@@ -170,3 +169,5 @@ bot_handlers = [CommandHandler('start', start),
                 RegexHandler('Начать тест', test_start),
                 CallbackQueryHandler(callback_handler)
                 ]
+
+
