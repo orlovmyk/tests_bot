@@ -164,6 +164,7 @@ def callback_handler(bot, update):
         bot.answer_callback_query(callback_query_id=query.id, text="Ви выбрали вариант №" + str(result))
 
 
+# Handlers for bot
 bot_handlers = [CommandHandler('start', start),
                 RegexHandler('Главное меню', main_menu),
                 RegexHandler('Начать тест', test_start),
