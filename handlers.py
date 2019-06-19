@@ -54,7 +54,7 @@ def generate_inline(*step):
     if step:
         inline_arr = []
 
-        for i in range(len(Q[0]["answers"])):
+        for i in range(len(Q[step[0]]["answers"])):
             inline_arr.append(InlineKeyboardButton(text=str(i + 1), callback_data=str(step[0])+"."+str(i + 1)))
 
         inline = InlineKeyboardMarkup([inline_arr])
