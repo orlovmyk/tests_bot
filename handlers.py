@@ -179,9 +179,9 @@ def callback_handler(bot, update):
     step = int(step) + 1
 
     if step >= len(Q):
+        count_result(query.message, int(generate_result(step, result=result)))
         print("TOTAL RESULT: " + str(get_result(query.message)))
 
-        count_result(query.message, int(generate_result(step, result=result)))
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
                               text="\nВаш результат: " + str(get_result(query.message)),
