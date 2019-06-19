@@ -1,3 +1,38 @@
+QUIZ_QUESTIONS = [
+    {
+        "question": "Сколько байт в 1 Кбайте?",
+        "answers": [
+            {"text": "1000 байт", "value": 0},
+            {"text": "1024 байт", "value": 1},
+            {"text": "8 байт", "value": 0},
+            {"text": "8000 байт", "value": 0},
+        ]
+    },
+
+    {
+        "question": "Что из ниже перечисленного не является языком программирования?",
+        "answers": [
+            {"text": "PHP", "value": 1},
+            {"text": "C#", "value": 0},
+            {"text": "JavaScript", "value": 0},
+        ]
+
+    },
+
+    {
+        "question": "Что значит ошибка сервера, обозначаемая кодом 500?",
+        "answers": [
+            {"text": "Not Found", "value": 0},
+            {"text": "Internal Server Error", "value": 1},
+            {"text": "FatalError", "value": 0},
+            {"text": "Bad Gateway", "value": 0},
+        ]
+
+    },
+
+]
+
+"""
 PROF_QUESTIONS = {
 
         {
@@ -46,3 +81,4 @@ PROF_QUESTIONS = {
              "answers": ["1 - 1 ОС", "2 - 2 ОС(правильный)", "3 - 3 ОС", "4 - 4 ОС"]
         }
 }
+"""

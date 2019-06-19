@@ -13,6 +13,8 @@ from telegram import (ReplyKeyboardMarkup,
                       InlineKeyboardButton,
                       InlineKeyboardMarkup)
 
+from questions import QUIZ_QUESTIONS as Q
+
 COUNTER = {}
 
 MAIN_MENU_MARKUP = ReplyKeyboardMarkup([['О кафедре'],
@@ -31,54 +33,53 @@ SUB_KEYBOARD_B = ReplyKeyboardMarkup([['1'],
                                       ['2'],
                                       ['3'],
                                       ['Вернуться назад']],
-                                   resize_keyboard=True)
+                                     resize_keyboard=True)
 
 SUB_KEYBOARD_M = ReplyKeyboardMarkup([['1'],
                                       ['2'],
                                       ['3'],
                                       ['Вернуться назад']],
-                                   resize_keyboard=True)
+                                     resize_keyboard=True)
 
 INITIAL_MESSAGE = "Привет!\n" \
                   "'Я чат-бот, созданый для ...\n\n"
 
-TEXT = ["Сколько байт в 1 Кбайте?\n"
-        "1 - 1000 байт\n"
-        "2 - 1024 байт\n"
-        "3 - 8 байт\n"
-        "4 - 8000 байт",
-
-        "Что из ниже перечисленного не является языком программирования?\n"
-        "1 - C#\n"
-        "2 - HTML\n"
-        "3 - JavaScript\n"
-        "4 - PHP\n",
-
-        "Укажите компилируемый язык программирования:\n"
-        "1 - JavaScript\n"
-        "2 - Java\n"
-        "3 - PHP\n"
-        "4 - Ruby",
-
-        "Конец\n"
-        "Дальше ничего нет\n",
-        ]
-
 
 # USEFUL FUNCTIONS
+
+# Генерирую клаву
 def generate_inline(*step):
     # ARGUMENT FOR STEP KEYBOARD
     # NO ARGUMENT FOR EMPTY KEYBOARD
     if step:
-        inline = InlineKeyboardMarkup(
-                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".0"),
-                  InlineKeyboardButton(text="2", callback_data=str(step[0])+".1"),
-                  InlineKeyboardButton(text="3", callback_data=str(step[0])+".0"),
-                  InlineKeyboardButton(text="4", callback_data=str(step[0]) + ".0")]])
+        inline_arr = []
+
+        for i in range(len(Q[0]["answers"])):
+            inline_arr.append(InlineKeyboardButton(text=str(i + 1), callback_data=str(step)+"."+str(i)))
+
+        inline = InlineKeyboardMarkup([inline_arr])
 
     else:
         inline = InlineKeyboardMarkup([[]])
+
     return inline
+
+
+# Генерирую текст ответа для теста
+# если передаю на каком мы сейчас шаге - беру текст из вопросника, нет - можно дописать что угодно
+def generate_text(*step):
+    if step:
+        text = Q[0]["question"]+"\n"
+
+        itr = 1
+        for i in Q[0]["answers"]:
+            text += str(itr) + " - " + i["text"] + "\n"
+
+            itr += 1
+    else:
+        text = "Дебаг??"
+
+    return text
 
 
 def add_kw(result, chat_id, message_id, **kwargs):
@@ -144,10 +145,10 @@ def start(bot, update):
 
 
 def test_start(bot, update):
-    message = TEXT[0]
+    text = generate_text(0)
     markup = generate_inline(0)
 
-    update.message.reply_text(message,
+    update.message.reply_text(text,
                               reply_markup=markup)
 
 
@@ -163,7 +164,7 @@ def callback_handler(bot, update):
     step, result = query.data.split(".")
     step = int(step) + 1
 
-    if step >= len(TEXT) - 1:
+    if step >= len(Q) - 1:
         print(999)
         print(get_result(query.message))
 
@@ -179,7 +180,7 @@ def callback_handler(bot, update):
         count_result(query.message, result)
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              text=TEXT[step],
+                              text=q[step]["question"],
                               reply_markup=generate_inline(step))
         bot.answer_callback_query(callback_query_id=query.id, text="Ви выбрали вариант №" + str(result))
 
