@@ -55,7 +55,7 @@ def generate_inline(*step):
         inline_arr = []
 
         for i in range(len(Q[0]["answers"])):
-            inline_arr.append(InlineKeyboardButton(text=str(i + 1), callback_data=str(step)+"."+str(i)))
+            inline_arr.append(InlineKeyboardButton(text=str(i + 1), callback_data=str(step[0])+"."+str(i + 1)))
 
         inline = InlineKeyboardMarkup([inline_arr])
 
@@ -69,10 +69,10 @@ def generate_inline(*step):
 # если передаю на каком мы сейчас шаге - беру текст из вопросника, нет - можно дописать что угодно
 def generate_text(*step):
     if step:
-        text = Q[0]["question"]+"\n"
+        text = Q[step[0]]["question"]+"\n"
 
         itr = 1
-        for i in Q[0]["answers"]:
+        for i in Q[step[0]]["answers"]:
             text += str(itr) + " - " + i["text"] + "\n"
 
             itr += 1
@@ -80,6 +80,19 @@ def generate_text(*step):
         text = "Дебаг??"
 
     return text
+
+
+# Генерирую результат относительно того какой сейчас шаг и какая кнопка была нажата
+def generate_result(*step, result):
+    if step:
+        result = int(result)-1
+        return_result = Q[step[0]-1]["answers"][result]["value"]
+
+    else:
+        return_result = "Дебаг??"
+
+    print("return_result: " + str(return_result))
+    return return_result
 
 
 def add_kw(result, chat_id, message_id, **kwargs):
@@ -103,7 +116,6 @@ def add_kw(result, chat_id, message_id, **kwargs):
 
 def count_result(message, result):
     # 'message': {'message_id': 436, 'date': 1560638474, 'chat': {'id': 239062390,
-    print(message.chat.id)
     chat_id = message.chat.id
     message_id = message.message_id
 
@@ -113,7 +125,7 @@ def count_result(message, result):
         if message_id not in COUNTER[chat_id]:
             add_kw(result, chat_id, message_id, to_message=True)
         else:
-            print(COUNTER[chat_id][message_id]["result"])
+            print("count_result: " + str(COUNTER[chat_id][message_id]["result"]))
             COUNTER[chat_id][message_id]["result"] += int(result)
 
 
@@ -162,27 +174,28 @@ def callback_handler(bot, update):
     query = update.callback_query
 
     step, result = query.data.split(".")
+
+    print("Current step: " + step)
     step = int(step) + 1
 
-    if step >= len(Q) - 1:
-        print(999)
-        print(get_result(query.message))
+    if step >= len(Q):
+        print("TOTAL RESULT: " + str(get_result(query.message)))
 
-        count_result(query.message, result)
+        count_result(query.message, int(generate_result(step, result=result)))
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              text=TEXT[step] + "\nВаш результат: " + str(get_result(query.message)),
+                              text="\nВаш результат: " + str(get_result(query.message)),
                               reply_markup=generate_inline())
         bot.answer_callback_query(callback_query_id=query.id, text="На этом всё")
         delete_query(query.message)
 
     else:
-        count_result(query.message, result)
+        count_result(query.message, int(generate_result(step, result=result)))
         bot.edit_message_text(chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              text=q[step]["question"],
+                              text=generate_text(step),
                               reply_markup=generate_inline(step))
-        bot.answer_callback_query(callback_query_id=query.id, text="Ви выбрали вариант №" + str(result))
+        bot.answer_callback_query(callback_query_id=query.id, text="Вы выбрали вариант №" + str(result))
 
 
 # Handlers for bot
