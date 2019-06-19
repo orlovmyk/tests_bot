@@ -42,23 +42,23 @@ SUB_KEYBOARD_M = ReplyKeyboardMarkup([['1'],
 INITIAL_MESSAGE = "Привет!\n" \
                   "'Я чат-бот, созданый для ...\n\n"
 
-TEXT = ["Тест на дебила\n"
-        "Желаю удачи",
+TEXT = ["Сколько байт в 1 Кбайте?\n"
+        "1 - 1000 байт\n"
+        "2 - 1024 байт\n"
+        "3 - 8 байт\n"
+        "4 - 8000 байт",
 
-        "Вопрос №1 Вариатны такие:\n"
-        "1. выфвыф\n"
-        "2. выфвы\n" 
-        "3. выф выфвыф\n",
+        "Что из ниже перечисленного не является языком программирования?\n"
+        "1 - C#\n"
+        "2 - HTML\n"
+        "3 - JavaScript\n"
+        "4 - PHP\n",
 
-        "Вопрос №2 Вариатны такие:\n"
-        "1. выфвыф\n"
-        "2. выфвы\n"
-        "3. выф выфвыф\n",
-
-        "Вопрос №3 такие:\n"
-        "1. выфвыф\n"
-        "2. выфвы\n"
-        "3. выф выфвыф\n",
+        "Укажите компилируемый язык программирования:\n"
+        "1 - JavaScript\n"
+        "2 - Java\n"
+        "3 - PHP\n"
+        "4 - Ruby",
 
         "Конец\n"
         "Дальше ничего нет\n",
@@ -71,9 +71,10 @@ def generate_inline(*step):
     # NO ARGUMENT FOR EMPTY KEYBOARD
     if step:
         inline = InlineKeyboardMarkup(
-                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".1"),
-                  InlineKeyboardButton(text="2", callback_data=str(step[0])+".2"),
-                  InlineKeyboardButton(text="3", callback_data=str(step[0])+".3")]])
+                 [[InlineKeyboardButton(text="1", callback_data=str(step[0])+".0"),
+                  InlineKeyboardButton(text="2", callback_data=str(step[0])+".1"),
+                  InlineKeyboardButton(text="3", callback_data=str(step[0])+".0"),
+                  InlineKeyboardButton(text="4", callback_data=str(step[0]) + ".0")]])
 
     else:
         inline = InlineKeyboardMarkup([[]])
